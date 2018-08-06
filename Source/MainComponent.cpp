@@ -15,7 +15,12 @@ MainComponent::MainComponent() :
 
     productId.setInputRestrictions (31, "0123456789");
     productId.setMultiLine (false, false);
+    productId.setTabKeyUsedAsCharacter (false);
     productId.setText (String (1000664603));
+    productId.onReturnKey = [&]()
+    {
+        buttonClicked (&search);
+    };
 
     resultBox.setTabSize (4, true);
     resultBox.setReadOnly (true);

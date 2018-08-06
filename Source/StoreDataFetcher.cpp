@@ -40,7 +40,7 @@ var StoreDataFetcher::fetch (int productId) const
     int statusCode = 0;
 
     std::unique_ptr<InputStream> stream (url.createInputStream (false, nullptr, nullptr, headers, 10000, &responseHeaders, &statusCode));
-    jassert (statusCode != 200);
+    jassert (statusCode == 200);
 
     if (stream != nullptr)
     {
