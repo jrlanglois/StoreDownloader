@@ -55,7 +55,7 @@ public:
     virtual String getCompanyName() const = 0;
 
     var fetch (int productId) const;
-    
+
     virtual String getProductName (const var& product) const = 0;
     virtual String getProductManufacturer (const var& product) const = 0;
     virtual double getProductPrice (const var& product) const = 0;
@@ -110,7 +110,7 @@ public:
         auto price = product.getProperty ("price", var());
         return static_cast<double> (price.getProperty ("value", 0.0));
     }
-    
+
     String getFormattedProductPrice (const var& product) const override
     {
         auto price = product.getProperty ("price", var());

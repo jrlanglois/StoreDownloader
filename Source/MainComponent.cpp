@@ -67,6 +67,11 @@ void MainComponent::buttonClicked (Button* button)
         HomeDepotStoreFetcher fetcher;
         auto result = fetcher.fetch (productIdToSearch);
 
+        if (result.isVoid() || result.isUndefined())
+        {
+            jassertfalse;
+        }
+
         codeDocument.replaceAllContent (JSON::toString (result));
         productPrice.setText (fetcher.getProductDisplayDescription (result), dontSendNotification);
     }
