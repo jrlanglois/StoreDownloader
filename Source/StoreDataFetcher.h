@@ -33,6 +33,7 @@
     #pragma warning (default: 4355)
 #endif
 
+//==============================================================================
 enum class StoreBrand
 {
     unknown = -1,
@@ -44,6 +45,7 @@ enum class StoreBrand
 
 String toString (StoreBrand brand);
 
+//==============================================================================
 class StoreDataFetcher
 {
 public:
@@ -52,24 +54,71 @@ public:
 
     virtual String getCompanyName() const = 0;
 
-    virtual URL generateProductUrl (int productId) const = 0;
+    var fetch (int productId) const;
     
-    virtual String getProductName (const var&) const = 0;
-    virtual String getProductManufacturer (const var&) const = 0;
-    virtual double getProductPrice (const var&) const = 0;
-    
+    virtual String getProductName (const var& product) const = 0;
+    virtual String getProductManufacturer (const var& product) const = 0;
+    virtual double getProductPrice (const var& product) const = 0;
+
     /** @returns a pre-formatted product price, as given by the source website.
-        If this is unsupported, it will simply call getProductPrice.
-        
+        If this is unsupported, it will simply return the result from
+        getProductPrice as a string.
+
         @see getProductPrice
     */
-    virtual double getFormattedProductPrice (const var&) const;
-    
+    virtual String getFormattedProductPrice (const var& product) const;
+
     /** @returns a default way to display a description for the given product. */
-    virtual String getProductDisplayDescription (const var& product);
+    virtual String getProductDisplayDescription (const var& product) const;
+
+protected:
+    virtual URL generateProductUrl (int productId) const = 0;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StoreDataFetcher)
+};
+
+//==============================================================================
+class HomeDepotStoreFetcher : public StoreDataFetcher
+{
+public:
+    HomeDepotStoreFetcher() {}
+    ~HomeDepotStoreFetcher() {}
+
+    String getCompanyName() const override
+    {
+        return "HomeDepot";
+    }
+
+    URL generateProductUrl (int productId) const override
+    {
+        return String ("https://www.homedepot.ca/homedepotcacommercewebservices/v2/homedepotca/products/") + String (productId);
+    }
+
+    String getProductName (const var& product) const override
+    {
+        return product.getProperty ("name", var()).toString();
+    }
+
+    String getProductManufacturer (const var& product) const override
+    {
+        return product.getProperty ("manufacturer", var()).toString();
+    }
+
+    double getProductPrice (const var& product) const override
+    {
+        auto price = product.getProperty ("price", var());
+        return static_cast<double> (price.getProperty ("value", 0.0));
+    }
+    
+    String getFormattedProductPrice (const var& product) const override
+    {
+        auto price = product.getProperty ("price", var());
+        return price.getProperty ("formattedValue", "0").toString();
+    }
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HomeDepotStoreFetcher)
 };
 
 #endif //STORE_DATA_FETCHER_H

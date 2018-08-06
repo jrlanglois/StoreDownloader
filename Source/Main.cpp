@@ -3,8 +3,8 @@
 class StoreDownloaderApplication : public JUCEApplication
 {
 public:
-    StoreDownloaderApplication()                            {}
-    ~StoreDownloaderApplication()                           {}
+    StoreDownloaderApplication() : lookAndFeel (LookAndFeel_V4::getMidnightColourScheme()) { LookAndFeel::setDefaultLookAndFeel (&lookAndFeel); }
+    ~StoreDownloaderApplication()                           { LookAndFeel::setDefaultLookAndFeel (nullptr); }
     const String getApplicationName() override              { return ProjectInfo::projectName; }
     const String getApplicationVersion() override           { return ProjectInfo::versionString; }
     bool moreThanOneInstanceAllowed() override              { return false; }
@@ -37,6 +37,7 @@ private:
     };
 
     std::unique_ptr<MainWindow> mainWindow;
+    LookAndFeel_V4 lookAndFeel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StoreDownloaderApplication)
 };

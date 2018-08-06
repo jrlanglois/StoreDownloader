@@ -6,14 +6,18 @@
               version="1.0.0">
   <MAINGROUP id="gX7qse" name="Store Downloader">
     <GROUP id="{F16CC7F5-B739-40B0-032A-C463C9715B5D}" name="Source">
+      <FILE id="a5OKYH" name="JavascriptCodeTokeniser.cpp" compile="1" resource="0"
+            file="Source/JavascriptCodeTokeniser.cpp"/>
+      <FILE id="Ss3nQq" name="JavascriptCodeTokeniser.h" compile="0" resource="0"
+            file="Source/JavascriptCodeTokeniser.h"/>
+      <FILE id="TAeT7x" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="EVrgsu" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
+      <FILE id="m7YNk1" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="WkMc8y" name="StoreDataFetcher.cpp" compile="1" resource="0"
             file="Source/StoreDataFetcher.cpp"/>
       <FILE id="MCcO4b" name="StoreDataFetcher.h" compile="0" resource="0"
             file="Source/StoreDataFetcher.h"/>
-      <FILE id="m7YNk1" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
-      <FILE id="EVrgsu" name="MainComponent.cpp" compile="1" resource="0"
-            file="Source/MainComponent.cpp"/>
-      <FILE id="TAeT7x" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

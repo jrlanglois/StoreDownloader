@@ -1,77 +1,7 @@
 #include "MainComponent.h"
 
-namespace
-{
-    String createUserAgent()
-    {
-        return "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'";
-    }
-}
-
-String toString (StoreBrand brand)
-{
-    switch (brand)
-    {
-        case StoreBrand::unknown:       return "(Unknown)";
-        case StoreBrand::homeDepot:     return "Home Depot";
-        case StoreBrand::homeHardware:  return "Home Hardware";
-        case StoreBrand::lowes:         return "Lowes";
-        case StoreBrand::rona:          return "Rona";
-
-        default:
-            jassertfalse;
-        break;
-    };
-
-    return {};
-}
-
-namespace HomeDepot
-{
-    var getProductInfo (int productId)
-    {
-        URL url (String ("https://www.homedepot.ca/homedepotcacommercewebservices/v2/homedepotca/products/") + String (productId));
-
-        String headers;
-        headers << createUserAgent() << newLine;
-
-        StringPairArray responseHeaders;
-        int statusCode = 0;
-
-        std::unique_ptr<InputStream> stream (url.createInputStream (false, nullptr, nullptr, headers, 10000, &responseHeaders, &statusCode));
-        if (stream != nullptr)
-        {
-            return JSON::parse (stream->readEntireStreamAsString());
-        }
-
-        DBG (statusCode);
-        jassertfalse;
-        return {};
-    }
-
-    String getProductName (const var& product)
-    {
-        return product.getProperty ("name", var()).toString();
-    }
-
-    String getProductManufacturer (const var& product)
-    {
-        return product.getProperty ("manufacturer", var()).toString();
-    }
-
-    String getProductPrice (const var& product)
-    {
-        auto price = product.getProperty ("price", var());
-        return price.getProperty ("formattedValue", "0").toString();
-    }
-
-    String getProductDisplayDescription (const var& product)
-    {
-        return getProductName (product) + ", " + getProductManufacturer (product) + ", " + getProductPrice (product);
-    }
-}
-
-MainComponent::MainComponent()
+MainComponent::MainComponent() :
+    resultBox (codeDocument, &tokeniser)
 {
     StringArray items =
     {
@@ -87,9 +17,10 @@ MainComponent::MainComponent()
     productId.setMultiLine (false, false);
     productId.setText (String (1000664603));
 
-    resultBox.setMultiLine (true, false);
+    resultBox.setTabSize (4, true);
+    resultBox.setReadOnly (true);
 
-    productPrice.setText("0", dontSendNotification);
+    productPrice.setText ("0", dontSendNotification);
 
     search.setButtonText ("Search");
     search.addListener (this);
@@ -99,7 +30,7 @@ MainComponent::MainComponent()
     addAndMakeVisible (resultBox);
     addAndMakeVisible (productPrice);
     addAndMakeVisible (search);
-    setSize (600, 400);
+    setSize (800, 600);
 }
 
 MainComponent::~MainComponent()
@@ -133,8 +64,10 @@ void MainComponent::buttonClicked (Button* button)
             return;
         }
 
-        auto result = HomeDepot::getProductInfo (productIdToSearch);
-        resultBox.setText (JSON::toString (result));
-        productPrice.setText (HomeDepot::getProductDisplayDescription (result), dontSendNotification);
+        HomeDepotStoreFetcher fetcher;
+        auto result = fetcher.fetch (productIdToSearch);
+
+        codeDocument.replaceAllContent (JSON::toString (result));
+        productPrice.setText (fetcher.getProductDisplayDescription (result), dontSendNotification);
     }
 }

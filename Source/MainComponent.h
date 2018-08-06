@@ -1,18 +1,8 @@
 #ifndef MAIN_COMPONENT_H
 #define MAIN_COMPONENT_H
 
-#include "JuceHeader.h"
-
-enum class StoreBrand
-{
-    unknown = -1,
-    homeDepot,
-    homeHardware,
-    lowes,
-    rona
-};
-
-String toString (StoreBrand brand);
+#include "JavascriptCodeTokeniser.h"
+#include "StoreDataFetcher.h"
 
 class MainComponent : public Component,
                       public Button::Listener
@@ -25,10 +15,14 @@ public:
     void buttonClicked (Button*) override;
 
 private:
+    CodeDocument codeDocument;
+    JavascriptCodeTokeniser tokeniser;
+
     StoreBrand brand = StoreBrand::homeDepot;
 
     ComboBox storeSelector;
-    TextEditor productId, resultBox;
+    TextEditor productId;
+    CodeEditorComponent resultBox;
     Label productPrice;
     TextButton search;
 
