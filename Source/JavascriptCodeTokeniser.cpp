@@ -95,16 +95,16 @@ CodeEditorComponent::ColourScheme JavascriptCodeTokeniser::getDefaultEditorColou
 {
     static const CodeEditorComponent::ColourScheme::TokenType types[] =
     {
-        { "Error",          Colour (Colours::red) },
-        { "Comment",        Colour (Colours::grey) },
-        { "Keyword",        Colour (Colours::skyblue) },
-        { "Operator",       Colour (Colours::white) },
-        { "Identifier",     Colour (Colours::white) },
-        { "Integer",        Colour (Colours::lightseagreen) },
-        { "Float",          Colour (Colours::lightseagreen) },
-        { "String",         Colour (Colours::orange) },
-        { "Bracket",        Colour (Colours::white) },
-        { "Punctuation",    Colour (Colours::white) }
+        { "Error",          Colours::red },
+        { "Comment",        Colours::grey },
+        { "Keyword",        Colours::skyblue },
+        { "Operator",       Colours::white },
+        { "Identifier",     Colours::white },
+        { "Integer",        Colours::lightseagreen },
+        { "Float",          Colours::lightseagreen },
+        { "String",         Colours::orange },
+        { "Bracket",        Colours::white },
+        { "Punctuation",    Colours::white }
     };
 
     CodeEditorComponent::ColourScheme cs;
