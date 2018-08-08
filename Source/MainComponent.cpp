@@ -57,8 +57,8 @@ void MainComponent::buttonClicked (Button* button)
 {
     if (button == &search)
     {
-        const auto productIdToSearch = productId.getText().trim().getIntValue();
-        if (productIdToSearch <= 0)
+        const auto productIdToSearch = productId.getText().trim();
+        if (productIdToSearch.isEmpty())
         {
             jassertfalse;
             return;

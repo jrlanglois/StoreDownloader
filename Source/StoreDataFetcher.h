@@ -42,7 +42,7 @@ public:
 
     virtual String getCompanyName() const = 0;
 
-    var fetch (int productId) const;
+    var fetch (const String& productId) const;
 
     virtual String getProductName (const var& product) const = 0;
     virtual String getProductManufacturer (const var& product) const = 0;
@@ -60,10 +60,55 @@ public:
     virtual String getProductDisplayDescription (const var& product) const;
 
 protected:
-    virtual URL generateProductUrl (int productId) const = 0;
+    virtual URL generateProductUrl (const String& productId) const = 0;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StoreDataFetcher)
+};
+
+//==============================================================================
+class CanadianTireStoreFetcher : public StoreDataFetcher
+{
+public:
+    CanadianTireStoreFetcher() {}
+    ~CanadianTireStoreFetcher() {}
+
+    String getCompanyName() const override
+    {
+        return "CanadianTire";
+    }
+
+    URL generateProductUrl (const String& productId) const override
+    {
+        return String ("http://www.canadiantire.ca/ESB/PriceAvailability?Product=")
+             + productId
+             + String ("P&Store=0144&Banner=CTR&isKiosk=FALSE&Language=E");
+    }
+
+    String getProductName (const var& product) const override
+    {
+        return product.getProperty ("name", var()).toString();
+    }
+
+    String getProductManufacturer (const var& product) const override
+    {
+        return product.getProperty ("manufacturer", var()).toString();
+    }
+
+    double getProductPrice (const var& product) const override
+    {
+        auto price = product.getProperty ("price", var());
+        return static_cast<double> (price.getProperty ("value", 0.0));
+    }
+
+    String getFormattedProductPrice (const var& product) const override
+    {
+        auto price = product.getProperty ("price", var());
+        return price.getProperty ("formattedValue", "0").toString();
+    }
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CanadianTireStoreFetcher)
 };
 
 //==============================================================================
@@ -78,9 +123,9 @@ public:
         return "HomeDepot";
     }
 
-    URL generateProductUrl (int productId) const override
+    URL generateProductUrl (const String& productId) const override
     {
-        return String ("https://www.homedepot.ca/homedepotcacommercewebservices/v2/homedepotca/products/") + String (productId);
+        return String ("https://www.homedepot.ca/homedepotcacommercewebservices/v2/homedepotca/products/") + productId;
     }
 
     String getProductName (const var& product) const override
@@ -107,6 +152,49 @@ public:
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HomeDepotStoreFetcher)
+};
+
+//==============================================================================
+class RonaStoreFetcher : public StoreDataFetcher
+{
+public:
+    RonaStoreFetcher() {}
+    ~RonaStoreFetcher() {}
+
+    String getCompanyName() const override
+    {
+        return "Rona";
+    }
+
+    URL generateProductUrl (const String& productId) const override
+    {
+        return String ("https://www.homedepot.ca/homedepotcacommercewebservices/v2/homedepotca/products/") + productId;
+    }
+
+    String getProductName (const var& product) const override
+    {
+        return product.getProperty ("name", var()).toString();
+    }
+
+    String getProductManufacturer (const var& product) const override
+    {
+        return product.getProperty ("manufacturer", var()).toString();
+    }
+
+    double getProductPrice (const var& product) const override
+    {
+        auto price = product.getProperty ("price", var());
+        return static_cast<double> (price.getProperty ("value", 0.0));
+    }
+
+    String getFormattedProductPrice (const var& product) const override
+    {
+        auto price = product.getProperty ("price", var());
+        return price.getProperty ("formattedValue", "0").toString();
+    }
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RonaStoreFetcher)
 };
 
 //==============================================================================

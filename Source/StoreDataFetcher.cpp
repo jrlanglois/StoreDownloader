@@ -11,7 +11,7 @@ namespace
 StoreDataFetcher::StoreDataFetcher() {}
 StoreDataFetcher::~StoreDataFetcher() {}
 
-var StoreDataFetcher::fetch (int productId) const
+var StoreDataFetcher::fetch (const String& productId) const
 {
     auto url = generateProductUrl (productId);
 
@@ -62,7 +62,9 @@ void StoreDataFetcherManager::registerFetcher (StoreDataFetcher* const newFetche
 
 void StoreDataFetcherManager::registerBasicFetchers()
 {
+    knownFetchers.add (new CanadianTireStoreFetcher());
     knownFetchers.add (new HomeDepotStoreFetcher());
+    knownFetchers.add (new RonaStoreFetcher());
 }
 
 void StoreDataFetcherManager::clearFetchers()
