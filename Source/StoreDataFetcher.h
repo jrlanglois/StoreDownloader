@@ -34,18 +34,6 @@
 #endif
 
 //==============================================================================
-enum class StoreBrand
-{
-    unknown = -1,
-    homeDepot,
-    homeHardware,
-    lowes,
-    rona
-};
-
-String toString (StoreBrand brand);
-
-//==============================================================================
 class StoreDataFetcher
 {
 public:
@@ -119,6 +107,58 @@ public:
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HomeDepotStoreFetcher)
+};
+
+//==============================================================================
+/**
+
+*/
+class StoreDataFetcherManager
+{
+public:
+    /** Constructor. */
+    StoreDataFetcherManager();
+
+    /** Destructor. */
+    ~StoreDataFetcherManager();
+
+    //==============================================================================
+    /** Adds a fetcher to the manager's list of available file types.
+
+        The object passed-in will be deleted by this object, so don't keep a pointer to it!
+    */
+    void registerFetcher (StoreDataFetcher* newFetcher);
+
+    /** Handy method to make it easy to register known fetchers. */
+    void registerBasicFetchers();
+
+    /** Clears the list of known fetchers. */
+    void clearFetchers();
+
+    /** Returns the number of currently registered fetchers. */
+    int getNumKnownFetchers() const noexcept                      { return knownFetchers.size(); }
+
+    /** Returns one of the registered fetchers. */
+    StoreDataFetcher* getKnownFetcher (int index) const           { return knownFetchers[index]; }
+
+    /** Returns one of the registered fetchers without checking the provided index. */
+    StoreDataFetcher* getKnownFetcherUnchecked (int index) const  { return knownFetchers.getUnchecked (index); }
+
+    /** Iterator access to the list of known fetchers. */
+    StoreDataFetcher** begin() const noexcept                     { return knownFetchers.begin(); }
+
+    /** Iterator access to the list of known fetchers. */
+    StoreDataFetcher** end() const noexcept                       { return knownFetchers.end(); }
+
+    /** @returns a StringArray containing all of the known fetchers' names. */
+    StringArray getKnownFetcherNames() const;
+
+private:
+    //==============================================================================
+    OwnedArray<StoreDataFetcher> knownFetchers;
+
+    //==============================================================================
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StoreDataFetcherManager)
 };
 
 #endif //STORE_DATA_FETCHER_H

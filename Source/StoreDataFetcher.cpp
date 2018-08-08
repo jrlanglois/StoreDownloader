@@ -1,23 +1,5 @@
 #include "StoreDataFetcher.h"
 
-String toString (StoreBrand brand)
-{
-    switch (brand)
-    {
-        case StoreBrand::unknown:       return "(Unknown)";
-        case StoreBrand::homeDepot:     return "Home Depot";
-        case StoreBrand::homeHardware:  return "Home Hardware";
-        case StoreBrand::lowes:         return "Lowes";
-        case StoreBrand::rona:          return "Rona";
-
-        default:
-            jassertfalse;
-        break;
-    };
-
-    return {};
-}
-
 namespace
 {
     String createUserAgent()
@@ -59,4 +41,41 @@ String StoreDataFetcher::getFormattedProductPrice (const var& product) const
 String StoreDataFetcher::getProductDisplayDescription (const var& product) const
 {
     return getProductName (product) + ", " + getProductManufacturer (product) + ", " + getFormattedProductPrice (product);
+}
+
+//==============================================================================
+StoreDataFetcherManager::StoreDataFetcherManager()
+{
+}
+
+StoreDataFetcherManager::~StoreDataFetcherManager()
+{
+}
+
+void StoreDataFetcherManager::registerFetcher (StoreDataFetcher* const newFetcher)
+{
+    jassert (newFetcher != nullptr);
+
+    if (newFetcher != nullptr)
+        knownFetchers.addIfNotAlreadyThere (newFetcher);
+}
+
+void StoreDataFetcherManager::registerBasicFetchers()
+{
+    knownFetchers.add (new HomeDepotStoreFetcher());
+}
+
+void StoreDataFetcherManager::clearFetchers()
+{
+    knownFetchers.clear();
+}
+
+StringArray StoreDataFetcherManager::getKnownFetcherNames() const
+{
+    StringArray results;
+
+    for (auto* fetcher : knownFetchers)
+        results.add (fetcher->getCompanyName());
+
+    return results;
 }

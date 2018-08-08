@@ -3,15 +3,10 @@
 MainComponent::MainComponent() :
     resultBox (codeDocument, &tokeniser)
 {
-    StringArray items =
-    {
-        toString (StoreBrand::homeDepot),
-        toString (StoreBrand::homeHardware),
-        toString (StoreBrand::lowes),
-        toString (StoreBrand::rona)
-    };
-    storeSelector.addItemList (items, 1);
-    storeSelector.setSelectedItemIndex (static_cast<int> (brand), dontSendNotification);
+    fetchers.registerBasicFetchers();
+
+    storeSelector.addItemList (fetchers.getKnownFetcherNames(), 1);
+    storeSelector.setSelectedItemIndex (0, dontSendNotification);
 
     productId.setInputRestrictions (31, "0123456789");
     productId.setMultiLine (false, false);
@@ -69,8 +64,15 @@ void MainComponent::buttonClicked (Button* button)
             return;
         }
 
-        HomeDepotStoreFetcher fetcher;
-        auto result = fetcher.fetch (productIdToSearch);
+        auto index = storeSelector.getSelectedItemIndex();
+        auto fetcher = fetchers.getKnownFetcher (index);
+        if (fetcher == nullptr)
+        {
+            jassertfalse;
+            return;
+        }
+
+        auto result = fetcher->fetch (productIdToSearch);
 
         if (result.isVoid() || result.isUndefined())
         {
@@ -78,6 +80,6 @@ void MainComponent::buttonClicked (Button* button)
         }
 
         codeDocument.replaceAllContent (JSON::toString (result));
-        productPrice.setText (fetcher.getProductDisplayDescription (result), dontSendNotification);
+        productPrice.setText (fetcher->getProductDisplayDescription (result), dontSendNotification);
     }
 }

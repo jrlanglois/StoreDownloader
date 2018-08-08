@@ -18,7 +18,7 @@ private:
     CodeDocument codeDocument;
     JavascriptCodeTokeniser tokeniser;
 
-    StoreBrand brand = StoreBrand::homeDepot;
+    StoreDataFetcherManager fetchers;
 
     ComboBox storeSelector;
     TextEditor productId;
