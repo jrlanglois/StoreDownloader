@@ -131,8 +131,8 @@ int JavascriptCodeTokeniser::readNextToken (CodeDocument::Iterator& source)
         case 0:
         break;
 
-        case '0':   case '1':   case '2':   case '3':   case '4':
-        case '5':   case '6':   case '7':   case '8':   case'9':
+        case '0': case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9':
         case '.':
         {
             int result = CppTokeniserFunctions::parseNumber (source);
@@ -148,13 +148,13 @@ int JavascriptCodeTokeniser::readNextToken (CodeDocument::Iterator& source)
             return result;
         }
 
-        case ',':   case ';':   case ':':
+        case ',': case ';': case ':':
             source.skip();
             return tokenType_punctuation;
 
-        case '(':   case ')':
-        case '{':   case '}':
-        case '[':   case ']':
+        case '(': case ')':
+        case '{': case '}':
+        case '[': case ']':
             source.skip();
             return tokenType_bracket;
 
@@ -171,7 +171,7 @@ int JavascriptCodeTokeniser::readNextToken (CodeDocument::Iterator& source)
         case '-':
         {
             source.skip();
-            int result = CppTokeniserFunctions::parseNumber (source);
+            auto result = CppTokeniserFunctions::parseNumber (source);
 
             if (result == tokenType_error)
             {
@@ -182,8 +182,8 @@ int JavascriptCodeTokeniser::readNextToken (CodeDocument::Iterator& source)
             return result;
         }
 
-        case '*':   case '%':
-        case '=':   case '!':
+        case '*': case '%':
+        case '=': case '!':
             source.skip();
             CppTokeniserFunctions::skipIfNextCharMatches (source, '=');
             CppTokeniserFunctions::skipIfNextCharMatches (source, '=');
@@ -212,20 +212,20 @@ int JavascriptCodeTokeniser::readNextToken (CodeDocument::Iterator& source)
             return tokenType_operator;
         }
 
-        case '>':   case '<':
+        case '>': case '<':
             source.skip();
             CppTokeniserFunctions::skipIfNextCharMatches (source, firstChar);
             CppTokeniserFunctions::skipIfNextCharMatches (source, firstChar);
             CppTokeniserFunctions::skipIfNextCharMatches (source, '=');
             return tokenType_operator;
 
-        case '|':   case '&':   case '^':
+        case '|': case '&': case '^':
             source.skip();
             CppTokeniserFunctions::skipIfNextCharMatches (source, firstChar);
             CppTokeniserFunctions::skipIfNextCharMatches (source, '=');
             return tokenType_operator;
 
-        case '~':   case '?':
+        case '~': case '?':
             source.skip();
             return tokenType_operator;
 

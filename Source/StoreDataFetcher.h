@@ -1,39 +1,8 @@
 #ifndef STORE_DATA_FETCHER_H
 #define STORE_DATA_FETCHER_H
 
-#include "JuceHeader.h"
+#include "Region.h"
 
-#if JUCE_CLANG
-    #pragma clang diagnostic warning "-Wall"
-    #pragma clang diagnostic warning "-Wconstant-conversion"
-    #pragma clang diagnostic warning "-Wconversion"
-    #pragma clang diagnostic warning "-Wextra-semi"
-    #pragma clang diagnostic warning "-Wint-conversion"
-    #pragma clang diagnostic warning "-Wnewline-eof"
-    #pragma clang diagnostic warning "-Wnon-virtual-dtor"
-    #pragma clang diagnostic warning "-Woverloaded-virtual"
-    #pragma clang diagnostic warning "-Wreorder"
-    #pragma clang diagnostic warning "-Wshadow"
-    #pragma clang diagnostic warning "-Wshorten-64-to-32"
-    #pragma clang diagnostic warning "-Wsign-compare"
-    #pragma clang diagnostic warning "-Wsign-conversion"
-    #pragma clang diagnostic warning "-Wstrict-aliasing"
-    #pragma clang diagnostic warning "-Wuninitialized"
-    #pragma clang diagnostic warning "-Wunused-parameter"
-#elif JUCE_MSVC
-    #pragma warning (default: 4242)
-    #pragma warning (default: 4254)
-    #pragma warning (default: 4264)
-    #pragma warning (default: 4265)
-    #pragma warning (default: 4287)
-    #pragma warning (default: 4296)
-    #pragma warning (default: 4302)
-    #pragma warning (default: 4342)
-    #pragma warning (default: 4350)
-    #pragma warning (default: 4355)
-#endif
-
-//==============================================================================
 class StoreDataFetcher
 {
 public:
@@ -60,6 +29,7 @@ public:
     virtual String getProductDisplayDescription (const var& product) const;
 
 protected:
+    virtual String generateHeader() const;
     virtual URL generateProductUrl (const String& productId) const = 0;
 
 private:
@@ -77,6 +47,8 @@ public:
     {
         return "CanadianTire";
     }
+
+    String generateHeader() const override;
 
     URL generateProductUrl (const String& productId) const override
     {
@@ -152,6 +124,92 @@ public:
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HomeDepotStoreFetcher)
+};
+
+//==============================================================================
+class HomeHardwareStoreFetcher : public StoreDataFetcher
+{
+public:
+    HomeHardwareStoreFetcher() {}
+    ~HomeHardwareStoreFetcher() {}
+
+    String getCompanyName() const override
+    {
+        return "HomeHardware";
+    }
+
+    URL generateProductUrl (const String& productId) const override
+    {
+        return String ("https://www.homedepot.ca/homedepotcacommercewebservices/v2/homedepotca/products/") + productId;
+    }
+
+    String getProductName (const var& product) const override
+    {
+        return product.getProperty ("name", var()).toString();
+    }
+
+    String getProductManufacturer (const var& product) const override
+    {
+        return product.getProperty ("manufacturer", var()).toString();
+    }
+
+    double getProductPrice (const var& product) const override
+    {
+        auto price = product.getProperty ("price", var());
+        return static_cast<double> (price.getProperty ("value", 0.0));
+    }
+
+    String getFormattedProductPrice (const var& product) const override
+    {
+        auto price = product.getProperty ("price", var());
+        return price.getProperty ("formattedValue", "0").toString();
+    }
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HomeHardwareStoreFetcher)
+};
+
+//==============================================================================
+class LowesStoreFetcher : public StoreDataFetcher
+{
+public:
+    LowesStoreFetcher() {}
+    ~LowesStoreFetcher() {}
+
+    String getCompanyName() const override
+    {
+        return "Lowes";
+    }
+
+    URL generateProductUrl (const String& productId) const override
+    {
+        return String ("https://www.homedepot.ca/homedepotcacommercewebservices/v2/homedepotca/products/") + productId;
+    }
+
+    String getProductName (const var& product) const override
+    {
+        return product.getProperty ("name", var()).toString();
+    }
+
+    String getProductManufacturer (const var& product) const override
+    {
+        return product.getProperty ("manufacturer", var()).toString();
+    }
+
+    double getProductPrice (const var& product) const override
+    {
+        auto price = product.getProperty ("price", var());
+        return static_cast<double> (price.getProperty ("value", 0.0));
+    }
+
+    String getFormattedProductPrice (const var& product) const override
+    {
+        auto price = product.getProperty ("price", var());
+        return price.getProperty ("formattedValue", "0").toString();
+    }
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LowesStoreFetcher)
 };
 
 //==============================================================================
